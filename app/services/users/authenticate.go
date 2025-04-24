@@ -1,11 +1,11 @@
-package handlers
+package users
 
 import (
 	"net/http"
 
-	"github.com/LuisAGP/BarterApp/auth"
-	"github.com/LuisAGP/BarterApp/db"
-	"github.com/LuisAGP/BarterApp/models"
+	"github.com/LuisAGP/BarterApp/app/models"
+	"github.com/LuisAGP/BarterApp/app/services/auth"
+	"github.com/LuisAGP/BarterApp/database"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -29,7 +29,7 @@ func RegisterUser(c *gin.Context) {
 	user.Password = string(hashedPassword)
 
 	// Create user
-	if err := db.Database.Create(&user).Error; err != nil {
+	if err := database.Conn.Create(&user).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Email already registered"})
 		return
 	}
@@ -51,7 +51,7 @@ func LoginUser(c *gin.Context) {
 
 	var user models.User
 	// Check email registered
-	if err := db.Database.Where("email = ?", input.Email).First(&user).Error; err != nil {
+	if err := database.Conn.Where("email = ?", input.Email).First(&user).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
 		return
 	}

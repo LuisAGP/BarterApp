@@ -1,33 +1,24 @@
 package main
 
 import (
-	"net/http"
+	"log"
+	"os"
 
-	"github.com/LuisAGP/BarterApp/db"
-	"github.com/LuisAGP/BarterApp/handlers"
-	"github.com/LuisAGP/BarterApp/middlewares"
-	"github.com/gin-gonic/gin"
+	"github.com/LuisAGP/BarterApp/app/routes"
+	"github.com/LuisAGP/BarterApp/database"
 )
 
 func main() {
+	// Catch every command from the command line
+	if len(os.Args) > 1 {
+		// For now only migrations
+		if os.Args[1] == "migrate" {
+			database.AutoMigrate()
+			log.Output(1, "migration successfully!")
+			os.Exit(0)
+		}
+	}
 
-	// Apply migrations
-	db.AutoMigrate()
-
-	// Define router
-	r := gin.Default()
-
-	// Public routes
-	r.POST("/register", handlers.RegisterUser)
-	r.POST("/login", handlers.LoginUser)
-
-	// Protected routes
-	authRoutes := r.Group("/api/v1")
-	authRoutes.Use(middlewares.JWTAuthMiddleware())
-	authRoutes.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"message": "pong!"})
-	})
-
-	r.Run(":8080")
-
+	r := routes.API()
+	r.Run("0.0.0.0:8080")
 }

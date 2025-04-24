@@ -1,17 +1,17 @@
-package db
+package database
 
 import (
 	"fmt"
 	"log"
 	"os"
 
-	"github.com/LuisAGP/BarterApp/models"
+	"github.com/LuisAGP/BarterApp/app/models"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-var Database = func() *gorm.DB {
+var Conn = func() *gorm.DB {
 	godotenv.Load()
 
 	user := os.Getenv("DB_USERNAME")
@@ -33,5 +33,5 @@ var Database = func() *gorm.DB {
 }()
 
 func AutoMigrate() {
-	Database.AutoMigrate(&models.User{})
+	Conn.AutoMigrate(&models.User{})
 }

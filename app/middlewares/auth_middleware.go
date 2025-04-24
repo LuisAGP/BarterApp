@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/LuisAGP/BarterApp/auth"
+	"github.com/LuisAGP/BarterApp/app/services/auth"
 	"github.com/gin-gonic/gin"
 )
 
